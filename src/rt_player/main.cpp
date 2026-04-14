@@ -384,11 +384,17 @@ int main(int argc, char** args) {
     unsigned int sampleRate = forcedSampleRate ? forcedSampleRate : brstm->sample_rate;
     unsigned int bufferFrames = OUTPUT_BUFSIZE;
     
-    try {
-        dac.openStream(&parameters, NULL, RTAUDIO_SINT16, sampleRate, &bufferFrames, &RtAudioCb, (void*)player_state, &options);
-        dac.startStream();
-    } catch(RtAudioError& e) {
-        e.printMessage();
+    const char* err_printf_string_rtaudio_init = "Error starting RtAudio: %s\n";
+    //const char* err_printf_string_rtaudio_general = "RtAudio error: %s\n";
+    const char* err_printf_string_rtaudio_close = "Error closing RtAudio: %s\n";
+    
+    if(dac.openStream(&parameters, NULL, RTAUDIO_SINT16, sampleRate, &bufferFrames, &RtAudioCb, (void*)player_state, &options) != RTAUDIO_NO_ERROR) {
+        printf(err_printf_string_rtaudio_init, dac.getErrorText().c_str());
+        exit(255);
+    }
+    
+    if(dac.startStream() != RTAUDIO_NO_ERROR) {
+        printf(err_printf_string_rtaudio_init, dac.getErrorText().c_str());
         exit(255);
     }
     
@@ -420,23 +426,22 @@ int main(int argc, char** args) {
         //Stop RtAudio when playback is paused and buffer is clean.
         if(player_state->paused && player_state->buffer_clean && !player_state->stream_suspended) {
             //Stop RtAudio
-            try {
-                dac.stopStream();
-                dac.closeStream();
-            } catch(RtAudioError& e) {
-                e.printMessage();
+            if(dac.stopStream() != RTAUDIO_NO_ERROR) {
+                printf(err_printf_string_rtaudio_close, dac.getErrorText().c_str());
                 break;
             }
+            dac.closeStream();
             
             player_state->stream_suspended = 1;
         }
         else if(player_state->stream_suspended && !player_state->paused) {
             //Restart RtAudio
-            try {
-                dac.openStream(&parameters, NULL, RTAUDIO_SINT16, sampleRate, &bufferFrames, &RtAudioCb, (void*)player_state, &options);
-                dac.startStream();
-            } catch(RtAudioError& e) {
-                e.printMessage();
+            if(dac.openStream(&parameters, NULL, RTAUDIO_SINT16, sampleRate, &bufferFrames, &RtAudioCb, (void*)player_state, &options) != RTAUDIO_NO_ERROR) {
+                printf(err_printf_string_rtaudio_init, dac.getErrorText().c_str());
+                break;
+            }
+            if(dac.startStream() != RTAUDIO_NO_ERROR) {
+                printf(err_printf_string_rtaudio_init, dac.getErrorText().c_str());
                 break;
             }
             
@@ -447,13 +452,11 @@ int main(int argc, char** args) {
     std::cout << '\n';
     
     if(dac.isStreamOpen()) {
-        try {
-            if(!player_state->stream_suspended) {
-                //Stop the stream
-                dac.stopStream();
+        if(!player_state->stream_suspended) {
+            //Stop the stream
+            if(dac.stopStream() != RTAUDIO_NO_ERROR) {
+                printf(err_printf_string_rtaudio_close, dac.getErrorText().c_str());
             }
-        } catch(RtAudioError& e) {
-            e.printMessage();
         }
         
         dac.closeStream();
