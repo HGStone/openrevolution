@@ -20,7 +20,7 @@ Supports lossless conversion between supported formats and up to 8 tracks/16 cha
 ## Usage
 Compile everything by running build.sh or using another compiler with the correct options.
 
-**Windows**: Builds available [here](https://st.eol.pw/openrevolution/).
+**Windows**: A Windows build of version 2.7.0 is available [here](https://github.com/ic-scm/openrevolution/releases/download/v2.7.0/brstm_converter_2.7.0_windows.zip). You may experience a bug when converting files - please read the attached PDF file. Please note that this build only includes the brstm_converter program, it does not include the brstm_rt audio player.
 
 **MacOS**: Install with Homebrew through [freeapp2014/stuff](https://github.com/FreeApp2014/homebrew-stuff) (instructions in repository).
 
@@ -33,7 +33,7 @@ Dependencies for converter (brstm_converter)
 - ffmpeg (optional) - Audio manipulation with the --ffmpeg option
 
 Dependencies for player (brstm_rt)
-- librtaudio - Audio output
+- librtaudio (version 6.x.x) - Audio output
 - unistd.h and termios.h
 - POSIX Threads
 
@@ -49,7 +49,7 @@ Usage guides:
 - [jackoalan/gc-dspadpcm-encode](https://github.com/jackoalan/gc-dspadpcm-encode): DSPADPCM encoder
 - [gota7](https://gota7.github.io/Citric-Composer/specs/binaryWav.html): BWAV file structure reference
 - [mk8.tockdom.com](http://mk8.tockdom.com/wiki/Main_Page) ([\[1\]](http://mk8.tockdom.com/wiki/BFSTM_\(File_Format\))[\[2\]](http://mk8.tockdom.com/wiki/BFWAV_\(File_Format\))) and [3dbrew.org](https://www.3dbrew.org/wiki/Main_Page) ([\[1\]](https://www.3dbrew.org/wiki/BCSTM)[\[2\]](https://www.3dbrew.org/wiki/BCWAV)): BCSTM, BFSTM, BCWAV, BFWAV file structure references
-- [FreeApp2014](https://github.com/FreeApp2014): Windows brstm_converter builds
+- [FreeApp2014](https://github.com/FreeApp2014): Windows brstm_converter builds, and macOS homebrew tap
 - [Gianmarco Gargiulo](https://gianmarco.ga/): Icon/Logo
 - [RtAudio](https://github.com/thestk/rtaudio): RtAudio library
 
